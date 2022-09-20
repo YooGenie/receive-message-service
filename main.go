@@ -2,13 +2,10 @@ package main
 
 import (
 	"flag"
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/sns"
 	"receive-message-service/service"
 
 	"fmt"
-	"os"
 )
 
 func main() {
@@ -17,31 +14,6 @@ func main() {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
-	svc := sns.New(sess)
-
-	sqsPtr := "" //ARN주소
-	topicPtr := "" //ARN주소
-
-	if sqsPtr == "" || topicPtr == "" {
-		fmt.Println("You must supply an email address and topic ARN")
-		fmt.Println("Usage: go run SnsSubscribe.go -e EMAIL -t TOPIC-ARN")
-		os.Exit(1)
-	}
-
-	//SNS 구독하는 방법
-	result, err := svc.Subscribe(&sns.SubscribeInput{
-		Endpoint:              &sqsPtr,
-		Protocol:              aws.String("sqs"),
-		ReturnSubscriptionArn: aws.Bool(true), // Return the ARN, even if user has yet to confirm
-		TopicArn:              &topicPtr,
-	})
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	fmt.Println(*result)
 
 	timeout := flag.Int64("t", 5, "How long, in seconds, that the message is hidden from others")
 	queue := flag.String("q", "", "The name of the queue")
@@ -75,23 +47,29 @@ func main() {
 		return
 	}
 
-	fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
-	fmt.Println("Message Handle: " + *msgResult.Messages[0].ReceiptHandle)
+	if len(msgResult.Messages) !=0 {
+		fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
+		fmt.Println("Message Handle: " + *msgResult.Messages[0].ReceiptHandle)
+		fmt.Println("Message Body: " + *msgResult.Messages[0].Body)
 
-	messageHandle := flag.String("m", *msgResult.Messages[0].ReceiptHandle, "The receipt handle of the message")
-	flag.Parse()
+		messageHandle := flag.String("m", *msgResult.Messages[0].ReceiptHandle, "The receipt handle of the message")
+		flag.Parse()
 
-	if *messageHandle == "" {
-		fmt.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
-		return
+		if *messageHandle == "" {
+			fmt.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
+			return
+		}
+
+		err = service.DeleteMessage(sess, queueURL.QueueUrl, messageHandle)
+		if err != nil {
+			fmt.Println("Got an error deleting the message:")
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
+	}else {
+		fmt.Println("큐에 아무것도 없음!!")
 	}
 
-	err = service.DeleteMessage(sess, queueURL.QueueUrl, messageHandle)
-	if err != nil {
-		fmt.Println("Got an error deleting the message:")
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
 }
