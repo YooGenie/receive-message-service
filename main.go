@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"log"
 	"receive-message-service/service"
+	"time"
 
 	"fmt"
 )
@@ -23,7 +25,6 @@ func main() {
 	queueURL, err := service.GetQueueURL(sess, queue)
 	if err != nil {
 		fmt.Println("Got an error getting the queue URL:")
-		return
 	}
 
 	if *queue == "" {
@@ -40,36 +41,39 @@ func main() {
 		*timeout = 12 * 60 * 60
 	}
 
-	msgResult, err := service.GetMessages(sess, queueURL.QueueUrl, timeout)
-	if err != nil {
-		fmt.Println("Got an error receiving messages:")
-		fmt.Println(err)
-		return
-	}
 
-	if len(msgResult.Messages) !=0 {
-		fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
-		fmt.Println("Message Handle: " + *msgResult.Messages[0].ReceiptHandle)
-		fmt.Println("Message Body: " + *msgResult.Messages[0].Body)
-
-		messageHandle := flag.String("m", *msgResult.Messages[0].ReceiptHandle, "The receipt handle of the message")
-		flag.Parse()
-
-		if *messageHandle == "" {
-			fmt.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
-			return
-		}
-
-		err = service.DeleteMessage(sess, queueURL.QueueUrl, messageHandle)
+	for  {
+		time.Sleep(time.Second*5)
+		msgResult, err := service.GetMessages(sess, queueURL.QueueUrl, timeout)
 		if err != nil {
-			fmt.Println("Got an error deleting the message:")
+			fmt.Println("Got an error receiving messages:")
 			fmt.Println(err)
-			return
 		}
 
-		fmt.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
-	}else {
-		fmt.Println("큐에 아무것도 없음!!")
+		if len(msgResult.Messages) !=0 {
+			fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
+			fmt.Println("Message Handle: " + *msgResult.Messages[0].ReceiptHandle)
+			fmt.Println("Message Body: " + *msgResult.Messages[0].Body)
+
+			//messageHandle := flag.String("m", *msgResult.Messages[0].ReceiptHandle, "The receipt handle of the message")
+
+			messageHandle:= *msgResult.Messages[0].ReceiptHandle
+			flag.Parse()
+
+			if messageHandle == "" {
+				fmt.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
+			}
+
+			err = service.DeleteMessage(sess, queueURL.QueueUrl, &messageHandle)
+			if err != nil {
+				fmt.Println("Got an error deleting the message:")
+				fmt.Println(err)
+			}
+
+			fmt.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
+		}else {
+			log.Println("큐에 아무것도 없음!!")
+		}
 	}
 
 }
