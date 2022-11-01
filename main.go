@@ -1,15 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"log"
+	"receive-message-service/dto"
+	"receive-message-service/kakao"
 	"receive-message-service/service"
 	"time"
 )
 
 func main() {
+	//Config.Bizmessage.Account.Password = properties["MESSAGING_ACCOUNT_PASSWORD"]
 	// Initialize a session that the SDK will use to load
 	// credentials from the shared credentials file. (~/.aws/credentials).
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
@@ -49,7 +53,21 @@ func main() {
 		}
 
 		if len(msgResult.Messages) != 0 {
-			log.Println("Message Body: " + *msgResult.Messages[0].Body)
+
+			messageBody := *msgResult.Messages[0].Body
+			//log.Println("Message Body11: " , messageBody	)
+
+
+			fmt.Println(messageBody)
+			data :=dto.DonationInfo{}
+			err := json.Unmarshal([]byte(messageBody), &data)
+			if err != nil {
+				log.Println(err)
+			}
+
+
+
+			kakao.KakaoBizmessageAdapter().SendDonationReservedMessage(data.MemberId,data.Mobile, data.ReservationNo, data.CampaignName,data.NickName,data.PostPlace)
 			messageHandle := *msgResult.Messages[0].ReceiptHandle
 			flag.Parse()
 
@@ -57,11 +75,11 @@ func main() {
 				log.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
 			}
 
-			err = service.DeleteMessage(sess, queueURL.QueueUrl, &messageHandle)
-			if err != nil {
-				log.Println("Got an error deleting the message:")
-			}
-			log.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
+			//err = service.DeleteMessage(sess, queueURL.QueueUrl, &messageHandle)
+			//if err != nil {
+			//	log.Println("Got an error deleting the message:")
+			//}
+			//log.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
 		} else {
 			log.Println("서비스2 -큐에 아무것도 없음!!")
 		}

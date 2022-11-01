@@ -1,0 +1,61 @@
+{
+  "ServiceName": "SharingService",
+  "HttpPort": "7000",
+  "Environment": "local",
+  "Database": {
+    "Driver": "mysql",
+    "User": "root",
+    "Connection": "@tcp(127.0.0.1:3306)/sharing?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True"
+  },
+  "Log": {
+    "ShowSql": false,
+    "ShowHttpLog": false,
+    "Path": "/var/log/go/api.log",
+    "MaxSize": 500,
+    "MaxBackups": 3,
+    "MaxAge": 32,
+    "Compress": true,
+    "Topic": {
+      "Behaviorlog": "",
+      "SendLog": false
+    },
+    "Database": {
+      "Driver": "",
+      "User": "",
+      "Shema": "",
+      "Host": ""
+    }
+  },
+  "Kakao": {
+    "RestApiKey": "c2781d293b2d541f6863d0bad780f5f6",
+    "RedirectURL": "http://localhost:7000/api/auth",
+    "LogoutRedirectURL": "http://localhost:3000/withdraw/completion"
+  },
+  "Domain": {
+    "WebApp": {
+      "LoginUrl": "http://localhost:3000/login",
+      "HomeUrl": "http://localhost:3000",
+      "OrgUrl": "http://localhost:3001/login"
+    },
+    "Admin": "http://localhost:3000"
+  },
+  "AwsS3": {
+    "Region": "ap-northeast-2",
+    "Bucket": "donation-donate-bucket",
+    "AccessKeyId": "AKIA3CEQE34R72NXMDFA",
+    "HttpEndPoint": "https://donation-donate-bucket.s3.ap-northeast-2.amazonaws.com"
+  },
+  "Service": {
+    "Name": "share-service"
+  },
+  "KakaoBizmessage": {
+    "Account": {
+      "Id": "beautiful_talk"
+    },
+    "AuthUrl": "https://msggw.supersms.co:9440/auth/v1/token",
+    "SendingUrl": "https://msggw.supersms.co:9443/v1/send/kko",
+    "KakaoChannelSenderKey": "57f25d13243c7cc799dca491da72b97620f56c7f",
+    "MessageSendingDomain": "localhost:3000",
+    "MessageSendingAdminDomain": "localhost:3000"
+  }
+}
