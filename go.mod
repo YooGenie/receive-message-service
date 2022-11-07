@@ -2,4 +2,4 @@ module receive-message-service
 
 go 1.16
 
-require github.com/aws/aws-sdk-go v1.44.126 // indirect
+require github.com/aws/aws-sdk-go v1.44.131
