@@ -1,5 +1,7 @@
 module receive-message-service
 
-go 1.16
+go 1.19
 
-require github.com/aws/aws-sdk-go v1.44.131
+require github.com/aws/aws-sdk-go v1.44.134
+
+require github.com/jmespath/go-jmespath v0.4.0 // indirect
