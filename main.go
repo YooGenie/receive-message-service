@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"log"
 	"receive-message-service/service"
+	"time"
 )
 
 func main() {
@@ -39,23 +41,24 @@ func main() {
 		*timeout = 12 * 60 * 60
 	}
 
-	msgResult, err := service.GetMessages(sess, queueURL.QueueUrl, timeout)
-	if err != nil {
-		fmt.Println("Got an error receiving messages:")
-		fmt.Println(err)
-		return
-	}
+	for {
+		time.Sleep(time.Second * 5)
 
-	if msgResult != nil {
-		fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
-		fmt.Println(*msgResult.Messages[0].Body)
-		messageHandle := flag.String("m", *msgResult.Messages[0].ReceiptHandle, "The receipt handle of the message")
-		flag.Parse()
+		msgResult, err := service.GetMessages(sess, queueURL.QueueUrl, timeout)
+		if err != nil {
+			log.Println("Got an error receiving messages:")
+		}
 
-		if *messageHandle == "" {
-			fmt.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
-			return
+		if len(msgResult.Messages) != 0 {
+			fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
+			fmt.Println(*msgResult.Messages[0].Body)
+			messageHandle := *msgResult.Messages[0].ReceiptHandle
+			if messageHandle == "" {
+				log.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
+			}
+
+		} else {
+			log.Println("서비스2 -큐에 아무것도 없음!!")
 		}
 	}
-
 }
