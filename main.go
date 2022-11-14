@@ -57,6 +57,12 @@ func main() {
 				log.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
 			}
 
+			err = service.DeleteMessage(sess, queueURL.QueueUrl, &messageHandle)
+			if err != nil {
+				log.Println("Got an error deleting the message:")
+			}
+			log.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
+
 		} else {
 			log.Println("서비스2 -큐에 아무것도 없음!!")
 		}
