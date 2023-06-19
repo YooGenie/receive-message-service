@@ -6,15 +6,15 @@ import (
 )
 
 func GetQueueURL(sess *session.Session, queue *string) (*sqs.GetQueueUrlOutput, error) {
-	svc := sqs.New(sess)
+	//svc := sqs.New(sess)
+	//
+	//result, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
+	//	QueueName: queue,
+	//})
+	//
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	result, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
-		QueueName: queue,
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return nil, nil
 }
