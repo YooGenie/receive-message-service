@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"receive-message-service/service"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 )
@@ -11,35 +13,23 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	fmt.Println(sess)
-	//timeout := flag.Int64("t", 5, "How long, in seconds, that the message is hidden from others")
-	//queue := flag.String("q", "sqs-test.fifo", "The name of the queue")
-	//flag.Parse()
+	timeout := int64(5)
+	queueURL := "https://sqs.ap-northeast-2.amazonaws.com/400281609678/Queue_Test.fifo"
 
-	//for {
-	//	time.Sleep(time.Second * 5)
-	//
-	//	msgResult, err := service.GetMessages(sess, queueURL.QueueUrl, timeout)
-	//	if err != nil {
-	//		log.Println("Got an error receiving messages:")
-	//	}
-	//
-	//	if len(msgResult.Messages) != 0 {
-	//		fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
-	//		fmt.Println(*msgResult.Messages[0].Body)
-	//		messageHandle := *msgResult.Messages[0].ReceiptHandle
-	//		if messageHandle == "" {
-	//			log.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
-	//		}
-	//
-	//		err = service.DeleteMessage(sess, queueURL.QueueUrl, &messageHandle)
-	//		if err != nil {
-	//			log.Println("Got an error deleting the message:")
-	//		}
-	//		log.Println("Deleted message from queue with URL " + *queueURL.QueueUrl)
-	//
-	//	} else {
-	//		log.Println("서비스2 -큐에 아무것도 없음!!")
-	//	}
-	//}
+	msgResult, err := service.GetMessages(sess, &queueURL, &timeout)
+	if err != nil {
+		log.Println("Got an error receiving messages:")
+	}
+
+	if len(msgResult.Messages) != 0 {
+		fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
+		fmt.Println("바디값 : ", *msgResult.Messages[0].Body)
+		messageHandle := *msgResult.Messages[0].ReceiptHandle
+		if messageHandle == "" {
+			log.Println("You must supply message receipt handle (-m MESSAGE-HANDLE)")
+		}
+
+	} else {
+		log.Println("서비스2 -큐에 아무것도 없음!!")
+	}
 }
