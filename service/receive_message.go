@@ -17,7 +17,7 @@ func GetMessages(sess *session.Session, queueURL *string, timeout *int64) (*sqs.
 			aws.String(sqs.QueueAttributeNameAll),
 		},
 		QueueUrl:            queueURL,
-		MaxNumberOfMessages: aws.Int64(1),
+		MaxNumberOfMessages: aws.Int64(10),
 		VisibilityTimeout:   timeout,
 	})
 
