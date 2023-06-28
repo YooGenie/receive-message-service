@@ -14,7 +14,7 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	timeout := int64(5)
+	timeout := int64(10)
 	queueURL := ""
 
 	for {
