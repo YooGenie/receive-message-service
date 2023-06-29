@@ -2,18 +2,20 @@ package main
 
 import (
 	"fmt"
+	"receive-message-service/config"
 	"receive-message-service/consumer"
 	"receive-message-service/dto"
 	"time"
 )
 
 func main() {
-	queueURL := ""
+	config.InitConfig("./config/config.json")
+	config.ConfigureEnvironment("./config")
 
 	megCh := make(chan dto.ReceivedEventMessage)
 
 	sqsConsumer := consumer.SqsConsumer{
-		QueueUrl:            queueURL,
+		QueueUrl:            config.Config.AwsSqs.QueueUrl,
 		MaxNumberOfMessages: 10,
 		VisibilityTimeout:   time.Second * 30,
 	}
