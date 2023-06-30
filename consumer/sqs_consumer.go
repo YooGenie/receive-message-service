@@ -18,8 +18,9 @@ type SqsConsumer struct {
 	MessageAutoDeleted  bool
 }
 
-func (s SqsConsumer) Consume(c chan dto.ReceivedEventMessage) {
+func (s SqsConsumer) Consume(chan dto.ReceivedEventMessage) {
 
+	var c = make(chan dto.ReceivedEventMessage)
 	sess := session.Must(session.NewSessionWithOptions(
 		session.Options{
 			SharedConfigState: session.SharedConfigEnable,
@@ -57,10 +58,7 @@ func (s SqsConsumer) Consume(c chan dto.ReceivedEventMessage) {
 					Module:        module,
 					Payload:       eventMessage,
 				}
-				err = service.DeleteMessage(sess, &s.QueueUrl, &messageHandle)
-				if err != nil {
-					logrus.Println("Got an error deleting the message:")
-				}
+
 				c <- ReceivedEventMessage
 			}
 		} else {
