@@ -7,7 +7,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-func DeleteMessage(sess *session.Session, queueURL *string, messageHandle *string) error {
+func DeleteMessage(queueURL *string, messageHandle *string) error {
+	sess := session.Must(session.NewSessionWithOptions(
+		session.Options{
+			SharedConfigState: session.SharedConfigEnable,
+		}))
+
 	svc := sqs.New(sess)
 
 	fmt.Println("messageHandle : ", queueURL)
