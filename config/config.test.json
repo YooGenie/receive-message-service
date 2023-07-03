@@ -1,0 +1,7 @@
+{
+  "ServiceName": "receive-message-service",
+  "Environment": "test",
+  "AwsSqs" : {
+    "QueueUrl" : ""
+  }
+}
