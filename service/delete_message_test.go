@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	config.InitConfig("../config/config_test.json")
+	config.InitConfig("../config/config.test.json")
 	config.ConfigureEnvironment("../config")
 }
 
@@ -47,10 +47,6 @@ func TestDeleteMessage(t *testing.T) {
 			"Env": {
 				DataType:    aws.String("String"),
 				StringValue: aws.String("test"),
-			},
-			"Module": {
-				DataType:    aws.String("String"),
-				StringValue: aws.String("receive-message-service"),
 			},
 		},
 		MessageBody:            aws.String(string(messageBody)),
