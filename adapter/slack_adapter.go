@@ -9,16 +9,15 @@ import (
 )
 
 func SendMessageToSlack() error {
-	s := "[utils/SendMessageToSlack]"
-	api := slack.New(config.Config.Slack)
+	api := slack.New(config.Config.Slack) //토큰
 
 	channelID, timestamp, err := api.PostMessage(
 		os.Getenv("CHANNEL_ID"),
-		slack.MsgOptionText("alert! you must fix it!", false),
+		slack.MsgOptionText("여기가 메시지 구나", false),
 	)
 
 	if err != nil {
-		fmt.Printf("%s %v\n", s, err)
+		fmt.Println("에러 메시지 : ", err)
 		return err
 	}
 
