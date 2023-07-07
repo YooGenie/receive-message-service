@@ -12,6 +12,7 @@ var Config = struct {
 	AwsSqs      struct {
 		QueueUrl string
 	}
+	Slack string
 }{}
 
 func InitConfig(cfg string) {
@@ -22,4 +23,5 @@ func ConfigureEnvironment(path string) {
 	configor.Load(&Config, path+"/config.json")
 
 	Config.AwsSqs.QueueUrl = os.Getenv("AWS_SQS_QUEUE_URL")
+	Config.Slack = os.Getenv("SLACK_TOKEN")
 }

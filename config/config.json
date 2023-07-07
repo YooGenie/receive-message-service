@@ -3,5 +3,6 @@
   "Environment": "local",
   "AwsSqs" : {
     "QueueUrl" : ""
-  }
+  },
+  "Slack" : ""
 }
