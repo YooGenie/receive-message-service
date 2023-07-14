@@ -10,8 +10,11 @@ func init() {
 	config.ConfigureEnvironment("../config")
 }
 
-func TestSendMessageToSlack(t *testing.T) {
+func TestSendMessage(t *testing.T) {
 	t.Run("(성공) 큐에 메시지 있을 때", func(t *testing.T) {
-		SendMessageToSlack()
+		err := SendMessage()
+		if err != nil {
+			return
+		}
 	})
 }
