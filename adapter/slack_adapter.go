@@ -2,17 +2,16 @@ package adapter
 
 import (
 	"fmt"
-	"os"
 	"receive-message-service/config"
 
 	"github.com/slack-go/slack"
 )
 
-func SendMessageToSlack() error {
-	api := slack.New(config.Config.Slack) //토큰
+func SendMessage() error {
+	api := slack.New(config.Config.Slack.Token) //토큰
 
 	channelID, timestamp, err := api.PostMessage(
-		os.Getenv("CHANNEL_ID"),
+		config.Config.Slack.ChannelID,
 		slack.MsgOptionText("여기가 메시지 구나", false),
 	)
 
@@ -22,5 +21,6 @@ func SendMessageToSlack() error {
 	}
 
 	fmt.Printf("slack message post successfully %s at %s", channelID, timestamp)
+
 	return nil
 }

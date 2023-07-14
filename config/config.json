@@ -4,5 +4,8 @@
   "AwsSqs" : {
     "QueueUrl" : ""
   },
-  "Slack" : ""
+  "Slack" : {
+    "Token": "",
+    "ChannelID" : ""
+  }
 }

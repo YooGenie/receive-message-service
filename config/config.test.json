@@ -3,5 +3,9 @@
   "Environment": "test",
   "AwsSqs" : {
     "QueueUrl" : ""
+  },
+  "Slack" : {
+    "Token": "",
+    "ChannelID" : ""
   }
 }
