@@ -2,7 +2,8 @@
   "ServiceName": "receive-message-service",
   "Environment": "local",
   "AwsSqs" : {
-    "QueueUrl" : ""
+    "QueueUrl" : "",
+    "Region"   :"ap-northeast-2"
   },
   "Slack" : {
     "Token": "",

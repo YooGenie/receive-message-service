@@ -2,9 +2,11 @@ package consumer
 
 import (
 	"encoding/json"
+	"receive-message-service/config"
 	"receive-message-service/dto"
 	"receive-message-service/service"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/sirupsen/logrus"
 
@@ -21,8 +23,10 @@ type SqsConsumer struct {
 func (s SqsConsumer) Consume(chan dto.ReceivedEventMessage) {
 
 	var c = make(chan dto.ReceivedEventMessage)
+
 	sess := session.Must(session.NewSessionWithOptions(
 		session.Options{
+			Config:            aws.Config{Region: &config.Config.AwsSqs.Region},
 			SharedConfigState: session.SharedConfigEnable,
 		}))
 
@@ -55,7 +59,7 @@ func (s SqsConsumer) Consume(chan dto.ReceivedEventMessage) {
 					MessageHandle: messageHandle,
 					EventType:     eventType,
 					Env:           env,
-					Module:        module,
+					ServiceName:   module,
 					Payload:       eventMessage,
 				}
 
