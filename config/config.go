@@ -11,6 +11,7 @@ var Config = struct {
 	Environment string
 	AwsSqs      struct {
 		QueueUrl string
+		Region   string
 	}
 	Slack struct {
 		Token     string
